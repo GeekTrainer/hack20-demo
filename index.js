@@ -10,10 +10,9 @@ async function main() {
 }
 
 async function loadDogs() {
-    const retrievedDogs = [
-        {name: 'Sammy'},
-        {name: 'Roscoe'}
-    ]
+    const response = await fetch('/api/dogs');
+    const retrievedData = await response.json();
+    const retrievedDogs = retrievedData.dogs;
     for (let dog of retrievedDogs) {
         dogs.push(dog);
     }
@@ -38,6 +37,18 @@ function addDogToDisplay(dog) {
 async function saveDog() {
     const name = document.getElementById('dog-name').value;
     const dog = { name };
-    dogs.push(dog);
-    addDogToDisplay(dog);
+
+    const response = await fetch(
+        '/api/dogs',
+        {
+            method: 'POST',
+            body: JSON.stringify(dog),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+    const retrievedDog = await response.json();
+    dogs.push(retrievedDog);
+    addDogToDisplay(retrievedDog);
 }
